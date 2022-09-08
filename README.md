@@ -39,6 +39,8 @@ Each member has an ID (not guaranteed to be sequential), basic address informati
        CONSTRAINT facilities_pk PRIMARY KEY (facid)
     );
 ```
+The facilities table lists all the bookable facilities that the country club possesses. The club stores id/name information, the cost to book both members and guests, the initial cost to build the facility, and estimated monthly upkeep costs. They hope to use this information to track how financially worthwhile each facility is.
+
 ```SQL
     CREATE TABLE cd.bookings
     (
@@ -52,3 +54,4 @@ Each member has an ID (not guaranteed to be sequential), basic address informati
        CONSTRAINT fk_bookings_memid FOREIGN KEY (memid) REFERENCES cd.members(memid)
     );
 ```
+Finally, there's a table tracking bookings of facilities. This stores the facility id, the member who made the booking, the start of the booking, and how many half hour 'slots' the booking was made for.
