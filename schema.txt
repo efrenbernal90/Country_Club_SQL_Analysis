@@ -1,15 +1,3 @@
-# Country_Club_SQL_Analysis
-An exploratory SQL analysis of Country Club members and facility usage.
-
-## Overview
-
-The dataset for these exercises is for a newly created country club, with a set of members, 
-facilities such as tennis courts, and booking history for those facilities. 
-Amongst other things, the club wants to understand how they can use their information to analyse facility usage/demand. 
-Please note: this dataset is designed purely for supporting an interesting array of exercises, and the database schema is flawed in several aspects - please don't take it as an example of good design. 
-We'll start off with a look at the Members table:
-
-```SQL
    CREATE TABLE cd.members
     (
        memid integer NOT NULL, 
@@ -24,10 +12,7 @@ We'll start off with a look at the Members table:
        CONSTRAINT fk_members_recommendedby FOREIGN KEY (recommendedby)
             REFERENCES cd.members(memid) ON DELETE SET NULL
     );
-```
-Each member has an ID (not guaranteed to be sequential), basic address information, a reference to the member that recommended them (if any), and a timestamp for when they joined. The addresses in the dataset are entirely (and unrealistically) fabricated.
-
-```SQL
+ 
     CREATE TABLE cd.facilities
     (
        facid integer NOT NULL, 
@@ -38,8 +23,7 @@ Each member has an ID (not guaranteed to be sequential), basic address informati
        monthlymaintenance numeric NOT NULL, 
        CONSTRAINT facilities_pk PRIMARY KEY (facid)
     );
-```
-```SQL
+
     CREATE TABLE cd.bookings
     (
        bookid integer NOT NULL, 
@@ -51,4 +35,3 @@ Each member has an ID (not guaranteed to be sequential), basic address informati
        CONSTRAINT fk_bookings_facid FOREIGN KEY (facid) REFERENCES cd.facilities(facid),
        CONSTRAINT fk_bookings_memid FOREIGN KEY (memid) REFERENCES cd.members(memid)
     );
-```
