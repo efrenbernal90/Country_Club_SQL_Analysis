@@ -1,0 +1,71 @@
+-- Retrieve everything from a table
+SELECT * FROM cd.facilities;
+
+-- Retrieve specific columns from a table
+SELECT name, membercost FROM cd.facilities; 
+
+-- Control which rows are retrieved, using WHERE statement 
+SELECT * FROM cd.facilities
+WHERE membercost > 0;
+
+-- Produce a list of facilities that charge a fee to members, and that fee is less than 1/50th of the monthly maintenance cost
+SELECT facid, name, membercost, monthlymaintenance
+FROM cd.facilities
+WHERE 
+    membercost > 0 AND 
+	(membercost < monthlymaintenance/50.0);
+    
+-- Basic string searches using WHERE and LIKE statements
+SELECT * 
+FROM cd.facilities
+WHERE 
+    name LIKE '%Tennis%';
+    
+-- Matching against multiple possible values
+SELECT *
+	FROM cd.facilities 
+	WHERE 
+		facid IN (1,5);
+        
+-- Classify results into 'buckets'
+SELECT name, 
+	CASE WHEN (monthlymaintenance > 100) THEN
+		'expensive'
+	ELSE
+		'cheap'
+	END AS cost
+	FROM cd.facilities;  
+    
+-- Working with Dates
+SELECT memid, surname, firstname, joindate 
+	FROM cd.members
+	WHERE joindate >= '2012-09-01';  
+    
+-- Removing duplicates, and ordering results
+SELECT DISTINCT surname 
+	FROM cd.members
+ORDER BY surname
+LIMIT 10;  
+
+-- Combining results from multiple queries; note: queries must result in identical number of columns and data types to use UNION 
+-- UNION removes duplicates, while UNION ALL does NOT
+SELECT surname 
+	FROM cd.members
+UNION
+SELECT name
+	FROM cd.facilities;
+    
+-- Aggregate functionality 
+SELECT MAX(joindate) AS latest
+	FROM cd.members;   
+    
+SELECT firstname, surname, joindate
+	FROM cd.members
+	WHERE joindate = 
+		(SELECT MAX(joindate) 
+			FROM cd.members);        
+
+--select firstname, surname, joindate
+	--from cd.members
+--order by joindate desc
+--limit 1;   
