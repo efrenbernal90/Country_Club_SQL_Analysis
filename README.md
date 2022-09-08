@@ -1,5 +1,13 @@
 # Country_Club_SQL_Analysis
-An exploratory SQL analysis of Country Club members and facility usage.
+An exploratory SQL analysis of Country Club members and facility usage. This project follows along with the SQL Practice set found on https://pgexercises.com/ 
+
+## Resources
+- [Data](Resources/clubdata.sql)
+
+## Additional Resources
+- [PosgreSQL v.11 Documentation](https://www.postgresql.org/docs/11/index.html)
+- [pgAdmin 4 v. 6.10](https://www.pgadmin.org/docs/pgadmin4/6.10/index.html)
+- [PostgreSQL Tutorial](https://www.postgresqltutorial.com/)
 
 ## Overview
 
