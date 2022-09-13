@@ -1,0 +1,91 @@
+-- Retrieve Start time of member's bookings
+SELECT bks.starttime 
+FROM cd.bookings bks
+INNER JOIN cd.members mbs 
+	ON mbs.memid = bks.memid
+
+	WHERE mbs.surname = 'Farrell' 
+	AND mbs.firstname = 'David';
+    
+--Work out the start times of bookings for tennis courts
+SELECT bks.starttime AS start,
+	fac.name AS name	
+	FROM cd.bookings bks
+INNER JOIN cd.facilities fac ON fac.facid = bks.facid
+WHERE fac.facid IN (0,1) AND
+	bks.starttime >= '09-21-2012' AND
+	bks.starttime < '09-22-2012';
+
+-- Produce a distinct list of all members who have recommended another member
+SELECT DISTINCT mems.firstname AS firstname, mems.surname AS surname
+FROM cd.members rec
+INNER JOIN cd.members mems ON rec.recommendedby = mems.memid
+ORDER BY mems.surname, mems.firstname;
+
+-- Produce a list of all members, along with their recommender
+SELECT mems.firstname AS memfname, 
+	mems.surname AS memsname,
+	rec.firstname AS recfname,
+	rec.surname AS recsname
+FROM cd.members mems
+LEFT OUTER JOIN cd.members rec ON rec.memid = mems.recommendedby
+ORDER BY memsname, memfname;
+
+-- Produce a list of all members who have used a tennis court
+SELECT DISTINCT mem.firstname || ' ' || mem.surname AS member,
+	fac.name AS facility
+	FROM cd.members mem
+		INNER JOIN 
+			cd.bookings bks ON mem.memid = bks.memid 
+		INNER JOIN
+			cd.facilities fac ON bks.facid = fac.facid
+	WHERE fac.facid IN (0,1)
+ORDER BY member, facility;
+
+-- Produce a list of costly bookings
+SELECT mem.firstname || ' ' || mem.surname AS member,
+	fac.name AS facility,
+	CASE 
+		WHEN mem.memid = 0 THEN
+			bks.slots*fac.guestcost
+		ELSE bks.slots*fac.membercost
+	END AS cost
+	FROM cd.members mem
+		INNER JOIN cd.bookings bks 
+			ON mem.memid = bks.memid
+		INNER JOIN cd.facilities fac
+			ON bks.facid = fac.facid
+	WHERE bks.starttime >= '09-14-2012' AND
+		bks.starttime < '09-15-2012' AND (
+		(mem.memid = 0 AND bks.slots*fac.guestcost > 30) OR
+		(mem.memid != 0 AND bks.slots*fac.membercost > 30)
+		  )
+ORDER BY cost DESC;
+
+-- Produce a list of all members, along with their recommender, using no joins.
+SELECT DISTINCT mem.firstname || ' ' || mem.surname AS member,
+	(SELECT rec.firstname || ' ' || rec.surname AS recommender
+		FROM cd.members rec
+		WHERE rec.memid = mem.recommendedby)
+	FROM cd.members mem
+ORDER BY member;
+
+-- Produce a list of costly bookings, using a subquery
+SELECT member, facility, cost FROM (	
+	SELECT mem.firstname || ' ' || mem.surname AS member,
+	fac.name AS facility,
+	CASE 
+		WHEN mem.memid = 0 THEN
+			bks.slots*fac.guestcost
+		ELSE bks.slots*fac.membercost
+	END AS cost
+	FROM cd.members mem
+		INNER JOIN cd.bookings bks 
+			ON mem.memid = bks.memid
+		INNER JOIN cd.facilities fac
+			ON bks.facid = fac.facid
+	WHERE bks.starttime >= '09-14-2012' AND
+		bks.starttime < '09-15-2012'
+) AS bookings
+WHERE cost > 30
+ORDER BY cost DESC; 
