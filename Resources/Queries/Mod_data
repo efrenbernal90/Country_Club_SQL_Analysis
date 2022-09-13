@@ -1,0 +1,54 @@
+-- Insert some data into a table
+INSERT INTO cd.facilities
+	(facid, name, membercost, guestcost, initialoutlay, monthlymaintenance)
+	VALUES (9, 'Spa', 20, 30, 100000, 800);
+
+-- Insert multiple rows of data into a table
+INSERT INTO cd.facilities
+	(facid, name, membercost, guestcost, initialoutlay, monthlymaintenance)
+	VALUES (9, 'Spa', 20, 30, 100000, 800),
+           (10, 'Squash Court 2', 3.5, 17.5, 5000, 80);
+
+    -- Alternatively:
+   INSERT INTO cd.facilities
+    (facid, name, membercost, guestcost, initialoutlay, monthlymaintenance)
+    SELECT 9, 'Spa', 20, 30, 100000, 800
+    UNION ALL
+        SELECT 10, 'Squash Court 2', 3.5, 17.5, 5000, 80;
+
+-- Insert calculated data into a table
+INSERT INTO cd.facilities
+    (facid, name, membercost, guestcost, initialoutlay, monthlymaintenance)
+    SELECT (SELECT max(facid) FROM cd.facilities)+1, 'Spa', 20, 30, 100000, 800;  
+
+-- Update some existing data
+UPDATE cd.facilities
+    SET initialoutlay = 10000
+    WHERE facid = 1;
+    
+-- Update multiple rows and columns at the same time
+UPDATE cd.facilities
+    SET
+        membercost = 6,
+        guestcost = 30
+    WHERE facid IN (0,1);
+    
+-- Update a row based on the contents of another row
+UPDATE cd.facilities facs
+    SET
+        membercost = (SELECT membercost * 1.1 FROM cd.facilities WHERE facid = 0),
+        guestcost = (SELECT guestcost * 1.1 FROM cd.facilities WHERE facid = 0)
+    WHERE facs.facid = 1;
+    
+-- Delete all bookings
+DELETE FROM cd.bookings;
+
+    -- alternativelty, TRUNCATE
+    -- TRUNCATE cd.bookings;
+    
+-- Delete a member from the cd.members table
+DELETE FROM cd.members 
+WHERE memid = 37;
+
+-- Delete based on a subquery
+DELETE FROM cd.members WHERE memid NOT IN (SELECT memid FROM cd.bookings);
