@@ -1,0 +1,20 @@
+-- Aggregate Functions 
+-- Count the number of facilities
+SELECT COUNT(*) FROM cd.facilities;
+
+-- Using COUNT in a subquery
+SELECT facid,
+    (SELECT COUNT (*) FROM cd.facilities)
+    FROM cd.facilities;
+    
+-- Count the number of expensive facilities (cost guests >=10)
+SELECT COUNT (*) FROM cd.facilities
+WHERE guestcost >= 10;
+
+-- Count the number of recommendations each member makes
+SELECT recommendedby,
+    COUNT (*)
+    FROM cd.members
+    WHERE recommendedby IS NOT NULL 
+    GROUP BY recommendedby
+ORDER BY recommendedby;
